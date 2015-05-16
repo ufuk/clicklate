@@ -51,25 +51,32 @@ function getSearchURL(searchString) {
 function getResultsForResponseText(responseText, url) {
     var result = "";
 
-    var table = getTableById(responseText, "englishResultsTable");
-    if (table != null) {
-        var resultsForLanguage = getResultsFromTags(table.find("a"));
+    var tables = $($.parseHTML(responseText)).find('#englishResultsTable');
+    var isThereCrossLanguageResult = tables.length == 3;
+
+    var englishResultsTable = $(tables[0]);
+    if (englishResultsTable != null) {
+        var resultsForLanguage = getResultsFromTags(englishResultsTable.find("a"));
         if (resultsForLanguage != "") {
-            result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>İngilizce - Türkçe</p>";
+            if (isThereCrossLanguageResult) {
+                result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>İngilizce - Türkçe</p>";
+            }
             result += resultsForLanguage;
         }
     }
 
-    var table = getTableById(responseText, "turkishResultsTable");
-    if (table != null) {
-        var resultsForLanguage = getResultsFromTags(table.find("a"));
-        if (resultsForLanguage != "") {
-            if (result != "") {
-                result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 5px 0px 0px 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
-            } else {
-                result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
+    if (isThereCrossLanguageResult) {
+        var turkishResultsTable = $(tables[1]);
+        if (turkishResultsTable != null) {
+            var resultsForLanguage = getResultsFromTags(turkishResultsTable.find("a"));
+            if (resultsForLanguage != "") {
+                if (result != "") {
+                    result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 5px 0px 0px 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
+                } else {
+                    result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
+                }
+                result += resultsForLanguage;
             }
-            result += resultsForLanguage;
         }
     }
 
@@ -106,8 +113,4 @@ function getUniqueResults(aTags) {
     }
 
     return uniqueResults;
-}
-
-function getTableById(responseText, resultTableId) {
-    return $($.parseHTML(responseText)).find('#' + resultTableId);
 }
