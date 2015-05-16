@@ -1,29 +1,29 @@
 ﻿{
-	"name": "TurengCM",
-	"version": "1.0",
-	"manifest_version": 2,
-	"description": "Tureng.com sağ tık menüsü çeviri uzantısı",
-	"background": {
-		"persistent": false,
-		"scripts": [
-			"main.js",
-			"balloon.js",
-			"jquery.min.js"
-		]
-	},
-	"web_accessible_resources": [
-		"ajax-loader.gif"
-	],
-	"permissions": [
-		"http://*/*",
-		"https://*/*",
-		"file:///*/*",
-		"contextMenus",
-		"tabs"
-  	],
-  	"icons": {
-  		"16": "tureng-icon-bitty.png",
-    	"48": "tureng-icon-small.png",
-    	"128": "tureng-icon-large.png"
-	}
+  "name": "Clicklate",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Sağ tık menüsü çeviri uzantısı",
+  "background": {
+    "persistent": false,
+    "scripts": [
+      "main.js",
+      "balloon.js",
+      "jquery.min.js"
+    ]
+  },
+  "web_accessible_resources": [
+    "preloader.gif"
+  ],
+  "permissions": [
+    "http://*/*",
+    "https://*/*",
+    "file:///*/*",
+    "contextMenus",
+    "tabs"
+  ],
+  "icons": {
+    "16": "clicklate-logo-16.png",
+    "48": "clicklate-logo-48.png",
+    "128": "clicklate-logo-128.png"
+  }
 }
