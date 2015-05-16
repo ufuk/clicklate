@@ -8,7 +8,7 @@
 		"scripts": [
 			"main.js",
 			"balloon.js",
-			"jquery-2.0.0.js"
+			"jquery.min.js"
 		]
 	},
 	"web_accessible_resources": [
