@@ -81,7 +81,7 @@ function getResultsForResponseText(responseText, url) {
     }
 
     if (result != "") {
-        result += "<a href='" + url + "' target='_blank' style='border: none; float: right; line-height: 0px; height: 5px; margin: 0px; padding: 0px; color: rgba(0, 0, 0, 0.75); font: italic bold 8px Verdana, sans-serif; text-align: center; text-decoration: none;'>>>></p>";
+        result += "<a href='" + url + "' target='_blank' style='border: none; float: right; line-height: 0px; height: 5px; margin: 0px; padding: 0px; color: rgba(0, 0, 0, 0.75); font: italic bold 8px Verdana, sans-serif; text-align: center; text-decoration: none;'>Tureng'de ara</p>";
         return result;
     }
 
