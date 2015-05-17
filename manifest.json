@@ -17,7 +17,6 @@
   "permissions": [
     "http://*/*",
     "https://*/*",
-    "file:///*/*",
     "contextMenus",
     "tabs"
   ],
