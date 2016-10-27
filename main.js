@@ -11,6 +11,15 @@ function createContextMenuOptions() {
     });
 }
 
+function doInCurrentTab(tabCallback) {
+    chrome.tabs.query(
+        {currentWindow: true, active: true},
+        function (tabArray) {
+            tabCallback(tabArray[0]);
+        }
+    );
+}
+
 function onClickContextMenuOptions(info, tab) {
     if (info.menuItemId == "translate") {
         chrome.tabs.executeScript(tab.id, {file: 'balloon.js', allFrames: true}, function () {
@@ -21,16 +30,48 @@ function onClickContextMenuOptions(info, tab) {
     }
 }
 
+var selectedTextGetter = function () {
+    var selection = window.getSelection();
+    return (selection.rangeCount > 0) ? selection.toString() : '';
+};
+
+chrome.commands.onCommand.addListener(function (command) {
+    console.log('command:', command);
+
+    if (command == "search-phrase") {
+        doInCurrentTab(function (tab) {
+            chrome.tabs.executeScript(null, {
+                    code: ';(' + selectedTextGetter + ')();',
+                    allFrames: true
+                },
+                function (selectedTextPerFrame) {
+                    if ((selectedTextPerFrame.length > 0) && (typeof(selectedTextPerFrame[0]) === 'string')) {
+                        var text = selectedTextPerFrame[0];
+                        chrome.tabs.executeScript(tab.id, {file: 'balloon.js', allFrames: true}, function () {
+                            search(text, tab.id);
+                        });
+                    }
+                });
+        });
+    }
+});
+
 function search(searchString, tabId) {
+    if (!searchString) {
+        return;
+    }
+
+    chrome.tabs.sendMessage(tabId, {method: 'createBalloon'});
+
     var request = new XMLHttpRequest();
     request.open("GET", getSearchURL(searchString), true);
     var completed = false;
-    chrome.tabs.sendMessage(tabId, {method: 'createBalloon'});
     request.onreadystatechange = function () {
         if (!completed && request.readyState == 4 && request.status == 200) {
+            var responseText = request.responseText;
             chrome.tabs.sendMessage(tabId, {
                 method: 'showResult',
-                string: getResultsForResponseText(request.responseText, getSearchURL(searchString))
+                string: getResultsForResponseText(responseText, getSearchURL(searchString))
             });
             completed = true;
         }

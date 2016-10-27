@@ -1,6 +1,6 @@
 ﻿{
   "name": "Clicklate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 2,
   "description": "Sağ tık menüsü çeviri uzantısı",
   "background": {
@@ -18,11 +18,20 @@
     "http://*/*",
     "https://*/*",
     "contextMenus",
-    "tabs"
+    "tabs",
+    "activeTab"
   ],
   "icons": {
     "16": "clicklate-logo-16.png",
     "48": "clicklate-logo-48.png",
     "128": "clicklate-logo-128.png"
+  },
+  "commands": {
+    "search-phrase": {
+      "suggested_key": {
+        "default": "Ctrl+M"
+      },
+      "description": "Search selected phrase on Tureng"
+    }
   }
 }
