@@ -1,4 +1,4 @@
-if (!window.IsBalloonDisplaying) {
+if (!window.IsBalloonDisplayed) {
     function createBalloon() {
         var rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
         var span = document.createElement("span");
@@ -118,10 +118,23 @@ if (!window.IsBalloonDisplaying) {
             sendResponse({});
         }
 
+        if (request.method == "closeBaloon") {
+            balloon.close();
+            sendResponse({});
+        }
+
         if (request.method == "createBalloon") {
+            try {
+                if (balloon) {
+                    balloon.close()
+                }
+            } catch (e) {
+                // ignore
+            }
+
             balloon = createBalloon();
             sendResponse({});
         }
     });
 }
-window.IsBalloonDisplaying = true;
+window.IsBalloonDisplayed = true;
