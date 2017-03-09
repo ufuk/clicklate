@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clicklate Kolay Sözlük - Ayarlar</title>
+    <style>
+        body {
+            padding: 0 15px 15px;
+        }
+
+        h1 {
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        div {
+            float: left;
+            padding-bottom: 10px;
+        }
+
+        .fullWidth {
+            width: 100%;
+        }
+
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Hatırlatıcı Ayarları</h1>
+<div class="fullWidth">
+    <p>Eğer hatırlatıcıyı aktifleştirseniz, Clicklate daha önce aradığınız kelimeleri belirlediğiniz sıklıkta size hatırlatarak bilmediğiniz kelimelerin anlamlarını kalıcı olarak öğrenmenizi sağlar.</p>
+</div>
+
+<div class="fullWidth">
+    <label>
+        Hatırlatıcı aktif? <input type="checkbox" name="activated">
+    </label>
+</div>
+
+<div class="fullWidth">
+    <label>Hatırlatma Sıklığı (dakika):</label> <input type="number" name="period" style="width: 15%; text-align: right;"/>
+</div>
+<div class="fullWidth">
+
+</div>
+
+<div class="fullWidth">
+    <button id="save">Kaydet</button>
+    <label id="statusLabel"></label>
+</div>
+
+<script src="jquery.min.js"></script>
+<script src="options.js"></script>
+</body>
+</html>
