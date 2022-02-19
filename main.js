@@ -21,7 +21,7 @@ function doInCurrentTab(tabCallback) {
 }
 
 function onClickContextMenuOptions(info, tab) {
-    if (info.menuItemId == "translate") {
+    if (info.menuItemId === "translate") {
         chrome.tabs.executeScript(tab.id, {file: 'balloon.js', allFrames: true}, function () {
             search(info.selectionText, tab.id);
         });
@@ -30,23 +30,23 @@ function onClickContextMenuOptions(info, tab) {
     }
 }
 
-var selectedTextGetter = function () {
-    var selection = window.getSelection();
+const selectedTextGetter = function () {
+    const selection = window.getSelection();
     return (selection.rangeCount > 0) ? selection.toString() : '';
 };
 
 chrome.commands.onCommand.addListener(function (command) {
     console.log('command:', command);
 
-    if (command == "search-phrase") {
+    if (command === "search-phrase") {
         doInCurrentTab(function (tab) {
             chrome.tabs.executeScript(null, {
                     code: ';(' + selectedTextGetter + ')();',
                     allFrames: true
                 },
                 function (selectedTextPerFrame) {
-                    if ((selectedTextPerFrame.length > 0) && (typeof(selectedTextPerFrame[0]) === 'string')) {
-                        var text = selectedTextPerFrame[0];
+                    if ((selectedTextPerFrame.length > 0) && (typeof (selectedTextPerFrame[0]) === 'string')) {
+                        const text = selectedTextPerFrame[0];
                         chrome.tabs.executeScript(tab.id, {file: 'balloon.js', allFrames: true}, function () {
                             search(text, tab.id);
                         });
@@ -63,22 +63,22 @@ function search(searchString, tabId) {
 
     chrome.tabs.sendMessage(tabId, {method: 'createBalloon'});
 
-    var request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     request.open("GET", getSearchURL(searchString), true);
-    var completed = false;
+    let completed = false;
     request.onreadystatechange = function () {
-        if (!completed && request.readyState == 4 && request.status == 200) {
-            var responseText = request.responseText;
+        if (!completed && request.readyState === 4 && request.status === 200) {
+            const responseText = request.responseText;
             chrome.tabs.sendMessage(tabId, {
                 method: 'showResult',
                 string: getResultsForResponseText(responseText, getSearchURL(searchString))
             });
             completed = true;
         }
-        if (request.readyState == 4 && (request.status == 0 || request.status == 404)) {
+        if (request.readyState === 4 && (request.status === 0 || request.status === 404)) {
             chrome.tabs.sendMessage(tabId, {
                 method: 'showResult',
-                string: '<p style=\'margin: 0px; padding: 0px; color: black; font: italic normal 12px Verdana, sans-serif;\'>Tureng ile bağlantı kurulamadı!</p>'
+                string: '<p style=\'margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;\'>Tureng ile bağlantı kurulamadı!</p>'
             });
         }
     }
@@ -90,65 +90,65 @@ function getSearchURL(searchString) {
 }
 
 function getResultsForResponseText(responseText, url) {
-    var result = "";
+    let result = "";
 
-    var tables = $($.parseHTML(responseText)).find('#englishResultsTable');
-    var isThereCrossLanguageResult = tables.length == 3;
+    const tables = $($.parseHTML(responseText)).find('#englishResultsTable');
+    const isThereCrossLanguageResult = tables.length === 3;
 
-    var englishResultsTable = $(tables[0]);
+    const englishResultsTable = $(tables[0]);
     if (englishResultsTable != null) {
-        var resultsForLanguage = getResultsFromTags(englishResultsTable.find("a"));
-        if (resultsForLanguage != "") {
+        let resultsForLanguage = getResultsFromTags(englishResultsTable.find("a"));
+        if (resultsForLanguage !== "") {
             if (isThereCrossLanguageResult) {
-                result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>İngilizce - Türkçe</p>";
+                result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0; padding: 0; color: black; font: italic bold 14px Verdana, sans-serif;'>İngilizce - Türkçe</p>";
             }
             result += resultsForLanguage;
         }
     }
 
     if (isThereCrossLanguageResult) {
-        var turkishResultsTable = $(tables[1]);
+        const turkishResultsTable = $(tables[1]);
         if (turkishResultsTable != null) {
-            var resultsForLanguage = getResultsFromTags(turkishResultsTable.find("a"));
-            if (resultsForLanguage != "") {
-                if (result != "") {
-                    result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 5px 0px 0px 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
+            let resultsForLanguage = getResultsFromTags(turkishResultsTable.find("a"));
+            if (resultsForLanguage !== "") {
+                if (result !== "") {
+                    result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 5px 0 0 0; padding: 0; color: black; font: italic bold 14px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
                 } else {
-                    result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0px; padding: 0px; color: black; font: italic bold 12px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
+                    result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0; padding: 0; color: black; font: italic bold 14px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
                 }
                 result += resultsForLanguage;
             }
         }
     }
 
-    if (result != "") {
-        result += "<a href='" + url + "' target='_blank' style='border: none; float: right; line-height: 0px; height: 5px; margin: 0px; padding: 0px; color: rgba(0, 0, 0, 0.75); font: italic bold 8px Verdana, sans-serif; text-align: center; text-decoration: none;'>Tureng'de ara</p>";
+    if (result !== "") {
+        result += "<a href='" + url + "' target='_blank' style='border: none; float: right; line-height: 0; height: 7px; margin: 0; padding: 0; color: rgba(0, 0, 0, 0.75); font: italic bold 10px Verdana, sans-serif; text-align: center; text-decoration: none;'>...</p>";
         return result;
     }
 
-    return "<p style='margin: 0px; padding: 0px; color: black; font: italic normal 12px Verdana, sans-serif;'>Sonuç bulunamadı!</p>";
+    return "<p style='margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;'>Çeviri bulunamadı...</p>";
 }
 
 function getResultsFromTags(aTags) {
-    var resultsForLanguage = "";
+    let resultsForLanguage = "";
 
-    uniqueResults = getUniqueResults(aTags);
-    for (var i = 0; i < uniqueResults.length; i++) {
-        if (i >= 4 || (i + 1 == uniqueResults.length && i < 4)) {
-            resultsForLanguage += "<p style='margin: 0px; padding: 0px; color: black; font: italic normal 12px Verdana, sans-serif;'>" + uniqueResults[i] + "</p>";
+    let uniqueResults = getUniqueResultsExactOrder(aTags);
+    for (let i = 0; i < uniqueResults.length; i++) {
+        if (i >= 4 || (i + 1 === uniqueResults.length && i < 4)) {
+            resultsForLanguage += "<p style='margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;'>" + uniqueResults[i] + "</p>";
             break;
         }
-        resultsForLanguage += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.15); margin: 0px; padding: 0px; color: black; font: italic normal 12px Verdana, sans-serif;'>" + uniqueResults[i] + "</p>";
+        resultsForLanguage += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.15); margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;'>" + uniqueResults[i] + "</p>";
     }
 
     return resultsForLanguage;
 }
 
-function getUniqueResults(aTags) {
-    var uniqueResults = new Array();
+function getUniqueResultsExactOrder(aTags) {
+    const uniqueResults = [];
 
-    for (var i = 1; i < aTags.length; i = i + 2) {
-        if (uniqueResults.indexOf(aTags[i].text) == -1) {
+    for (let i = 1; i < aTags.length; i = i + 2) {
+        if (uniqueResults.indexOf(aTags[i].text) === -1) {
             uniqueResults.push(aTags[i].text);
         }
     }

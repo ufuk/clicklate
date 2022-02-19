@@ -1,27 +1,21 @@
 .balloonSpan {
-	background-attachment: scroll;
-	background-clip: border-box;
-	background-image: none;
-	background-origin: padding-box;
-	box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.3);
-	border: 2px solid #bd1e2c;
-	border-radius: 0px;
-	cursor: auto;
-	display: block;
-	margin: 0px;
-	padding: 10px;
-	z-index: 100000;
-	background: white;
-	position: absolute;
-	height: auto;
-	width: 150px;
-	right: 3px;
-	white-space: pre-wrap;
-	word-spacing: normal;
-	text-align: right;
-	color: black;
-}
-
-.balloonLoadingImg {
-	
+    background-clip: border-box;
+    background-origin: padding-box;
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.3);
+    border: 2px solid #bd1e2c;
+    border-radius: 0;
+    cursor: auto;
+    display: block;
+    margin: 0;
+    padding: 10px;
+    z-index: 100000;
+    background: white none scroll;
+    position: absolute;
+    height: auto;
+    width: 150px;
+    right: 3px;
+    white-space: pre-wrap;
+    word-spacing: normal;
+    text-align: right;
+    color: black;
 }

@@ -31,7 +31,7 @@ if (!window.IsBalloonDisplayed) {
         span.style.whiteSpace = "pre-wrap";
         span.style.textAlign = "left";
         span.style.color = "black";
-        span.style.font = "italic normal 12px Verdana, sans-serif;";
+        span.style.font = "italic normal 14px Verdana, sans-serif;";
         span.style.left = (rect.left - 15) + "px";
         span.style.top = (rect.top + rect.height + window.pageYOffset + 11) + "px";
 
@@ -51,8 +51,8 @@ if (!window.IsBalloonDisplayed) {
         loading.style.lineHeight = "normal";
         loading.style.margin = "0px auto";
         loading.style.padding = "0px";
-        loading.style.width = "12px";
-        loading.style.height = "12px";
+        loading.style.width = "14px";
+        loading.style.height = "14px";
         loading.style.position = "static";
         loading.style.zIndex = "auto";
 
@@ -72,7 +72,7 @@ if (!window.IsBalloonDisplayed) {
         tail.style.cursor = "auto";
         tail.style.display = "block";
         tail.style.fontFamily = "sans-serif";
-        tail.style.fontSize = "12px";
+        tail.style.fontSize = "14px";
         tail.style.fontStyle = "normal";
         tail.style.fontVariant = "normal";
         tail.style.fontWeight = "normal";
@@ -99,7 +99,7 @@ if (!window.IsBalloonDisplayed) {
             balloon.close();
         }, false);
 
-        var balloon = {
+        let balloon = {
             setText: function (text) {
                 span.removeChild(loading);
                 content.innerHTML = text;
@@ -113,17 +113,12 @@ if (!window.IsBalloonDisplayed) {
     }
 
     chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
-        if (request.method == "showResult") {
+        if (request.method === "showResult") {
             balloon.setText(request.string);
             sendResponse({});
         }
 
-        if (request.method == "closeBaloon") {
-            balloon.close();
-            sendResponse({});
-        }
-
-        if (request.method == "createBalloon") {
+        if (request.method === "createBalloon") {
             try {
                 if (balloon) {
                     balloon.close()
