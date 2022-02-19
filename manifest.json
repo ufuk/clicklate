@@ -1,20 +1,15 @@
 ﻿{
-  "manifest_version": 2,
   "name": "Clicklate Kolay Sözlük",
-  "description": "Kolay sözlük ve bilinmeyen kelimeler hatırlatma eklentisi",
-  "version": "2.0.0",
-  "author": "Ufuk Uzun",
+  "version": "1.1.1",
+  "manifest_version": 2,
+  "description": "Chrome için kolay çeviri/sözlük eklentisi",
   "background": {
     "persistent": false,
     "scripts": [
-      "jquery.min.js",
       "main.js",
-      "translation.js",
-      "balloon.js"
+      "balloon.js",
+      "jquery.min.js"
     ]
-  },
-  "browser_action": {
-    "default_icon": "clicklate-logo-128.png"
   },
   "web_accessible_resources": [
     "preloader.gif"
@@ -24,10 +19,7 @@
     "https://*/*",
     "contextMenus",
     "tabs",
-    "activeTab",
-    "alarms",
-    "notifications",
-    "storage"
+    "activeTab"
   ],
   "icons": {
     "16": "clicklate-logo-16.png",
@@ -41,9 +33,5 @@
       },
       "description": "Seçili metni ara"
     }
-  },
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": true
   }
 }
