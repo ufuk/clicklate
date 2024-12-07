@@ -1,6 +1,11 @@
-if (!window.IsBalloonDisplayed) {
+if (!window.isClicklateLoaded) {
     function createBalloon() {
-        var rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
+        var selection = window.getSelection && window.getSelection();
+        if (!selection || selection.rangeCount < 1) {
+            return;
+        }
+
+        var rect = selection.getRangeAt(0).getBoundingClientRect();
         var span = document.createElement("span");
         var tail = document.createElement("span");
         var loading = document.createElement("img");
@@ -36,7 +41,7 @@ if (!window.IsBalloonDisplayed) {
         span.style.top = (rect.top + rect.height + window.pageYOffset + 11) + "px";
 
         /* Loading Image */
-        loading.src = chrome.extension.getURL("preloader.gif");
+        loading.src = chrome.runtime.getURL("preloader.gif");
         loading.style.backgroundAttachment = "scroll";
         loading.style.backgroundClip = "border-box";
         loading.style.backgroundColor = "transparent";
@@ -112,10 +117,91 @@ if (!window.IsBalloonDisplayed) {
         return balloon;
     }
 
-    chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
+    function getResultsForResponseText(responseText, searchURL) {
+        let result = "";
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(responseText, "text/html");
+
+        const tables = doc.querySelectorAll("#englishResultsTable");
+        const isThereCrossLanguageResult = tables.length === 3;
+
+        const englishResultsTable = tables[0];
+        if (englishResultsTable) {
+            const resultsForLanguage = getResultsFromTags(englishResultsTable.querySelectorAll("a"));
+            if (resultsForLanguage != "") {
+                if (isThereCrossLanguageResult) {
+                    result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0; padding: 0; color: black; font: italic bold 14px Verdana, sans-serif;'>İngilizce - Türkçe</p>";
+                }
+                result += resultsForLanguage;
+            }
+        }
+
+        if (isThereCrossLanguageResult) {
+            const turkishResultsTable = tables[1];
+            if (turkishResultsTable != null) {
+                let resultsForLanguage = getResultsFromTags(turkishResultsTable.querySelectorAll("a"));
+                if (resultsForLanguage !== "") {
+                    if (result !== "") {
+                        result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 5px 0 0 0; padding: 0; color: black; font: italic bold 14px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
+                    } else {
+                        result += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.75); margin: 0; padding: 0; color: black; font: italic bold 14px Verdana, sans-serif;'>Türkçe - İngilizce</p>";
+                    }
+                    result += resultsForLanguage;
+                }
+            }
+        }
+
+        if (result !== "") {
+            result += "<a href='" + searchURL + "' target='_blank' style='border: none; float: right; line-height: 0; height: 7px; margin: 0; padding: 0; color: rgba(0, 0, 0, 0.75); font: italic bold 10px Verdana, sans-serif; text-align: center; text-decoration: none;'>...</p>";
+            return result;
+        }
+
+        return "<p style='margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;'>Çeviri bulunamadı...</p>";
+    }
+
+    function getResultsFromTags(aTags) {
+        let resultsForLanguage = "";
+
+        let uniqueResults = getUniqueResultsExactOrder(aTags);
+        for (let i = 0; i < uniqueResults.length; i++) {
+            if (i >= 4 || (i + 1 === uniqueResults.length && i < 4)) {
+                resultsForLanguage += "<p style='margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;'>" + uniqueResults[i] + "</p>";
+                break;
+            }
+            resultsForLanguage += "<p style='border-bottom: 1px solid rgba(0, 0, 0, 0.15); margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;'>" + uniqueResults[i] + "</p>";
+        }
+
+        return resultsForLanguage;
+    }
+
+    function getUniqueResultsExactOrder(aTags) {
+        const uniqueResults = [];
+
+        for (let i = 1; i < aTags.length; i = i + 2) {
+            if (uniqueResults.indexOf(aTags[i].text) === -1) {
+                uniqueResults.push(aTags[i].text);
+            }
+        }
+
+        return uniqueResults;
+    }
+
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.method === "showResult") {
-            balloon.setText(request.string);
-            sendResponse({});
+            if (!balloon) {
+                // ignore
+                return;
+            }
+
+            if (!request.externalRequestSucceeded) {
+                request.resultText = '<p style=\'margin: 0; padding: 0; color: black; font: italic normal 14px Verdana, sans-serif;\'>Tureng ile bağlantı kurulamadı!</p>'
+            } else {
+                request.resultText = getResultsForResponseText(request.rawResponseText, request.searchURL);
+            }
+
+            balloon.setText(request.resultText);
+            sendResponse({ "message": "Result text is displayed" });
         }
 
         if (request.method === "createBalloon") {
@@ -128,8 +214,8 @@ if (!window.IsBalloonDisplayed) {
             }
 
             balloon = createBalloon();
-            sendResponse({});
+            sendResponse({ "message": "Balloon is created" });
         }
     });
 }
-window.IsBalloonDisplayed = true;
+window.isClicklateLoaded = true;

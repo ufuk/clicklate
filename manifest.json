@@ -1,24 +1,29 @@
 ﻿{
   "name": "Clicklate Kolay Sözlük",
-  "version": "1.1.3",
-  "manifest_version": 2,
+  "version": "1.1.4",
+  "manifest_version": 3,
   "description": "Chrome için kolay çeviri/sözlük eklentisi",
   "background": {
-    "persistent": false,
-    "scripts": [
-      "main.js",
-      "balloon.js",
-      "jquery.min.js"
-    ]
+    "service_worker": "background.js"
   },
   "web_accessible_resources": [
-    "preloader.gif"
+    {
+      "resources": [
+        "preloader.gif"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ],
   "permissions": [
-    "http://*/*",
-    "https://*/*",
     "contextMenus",
-    "activeTab"
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
   ],
   "icons": {
     "16": "clicklate-logo-16.png",
@@ -28,7 +33,8 @@
   "commands": {
     "search-phrase": {
       "suggested_key": {
-        "default": "Ctrl+M"
+        "default": "Ctrl+M",
+        "mac": "MacCtrl+M"
       },
       "description": "Seçili metni ara"
     }
