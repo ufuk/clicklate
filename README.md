@@ -1,5 +1,4 @@
-Clicklate
-=========
+# Clicklate
 
 Context menu quick translate extension for Google Chrome browser.
 
